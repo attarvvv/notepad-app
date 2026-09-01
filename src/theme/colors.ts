@@ -38,11 +38,22 @@ export const theme = {
       lineHeight: 34,
       letterSpacing: -0.4,
     },
+    titleLarge: {
+      fontSize: 28,
+      fontWeight: '700' as const,
+      color: '#FFFFFF',
+      letterSpacing: -0.5,
+    },
     titleMedium: {
       fontSize: 17,
       fontWeight: '600' as const,
       color: '#FFFFFF',
       letterSpacing: -0.2,
+    },
+    titleSmall: {
+      fontSize: 15,
+      fontWeight: '600' as const,
+      color: '#FFFFFF',
     },
     bodyLarge: {
       fontSize: 17,
@@ -98,6 +109,13 @@ export const theme = {
       shadowOpacity: 0.35,
       shadowRadius: 6,
       elevation: 3,
+    },
+    medium: {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.45,
+      shadowRadius: 10,
+      elevation: 5,
     },
   },
 };
