@@ -2,7 +2,6 @@ import React from 'react';
 import {
   TouchableOpacity,
   Text,
-  StyleSheet,
   ActivityIndicator,
   ViewStyle,
   TextStyle,
@@ -22,6 +21,44 @@ interface CustomButtonProps {
   textStyle?: TextStyle;
 }
 
+const variantStyles: Record<string, { container: string; text: string }> = {
+  primary: {
+    container: 'bg-[#EBB338]',
+    text: 'text-black font-bold',
+  },
+  secondary: {
+    container: 'bg-[#EBB338]/15',
+    text: 'text-white font-semibold',
+  },
+  outline: {
+    container: 'bg-transparent border-[1.5px] border-[#2C2C2E]',
+    text: 'text-white font-semibold',
+  },
+  danger: {
+    container: 'bg-[#FF453A]',
+    text: 'text-white font-bold',
+  },
+  ghost: {
+    container: 'bg-transparent',
+    text: 'text-[#8E8E93]',
+  },
+};
+
+const sizeStyles: Record<string, { container: string; text: string }> = {
+  sm: {
+    container: 'py-2 px-3.5 rounded-lg',
+    text: 'text-[13px]',
+  },
+  md: {
+    container: 'py-3 px-4.5 rounded-xl',
+    text: 'text-[15px]',
+  },
+  lg: {
+    container: 'py-4 px-6 rounded-2xl',
+    text: 'text-[16px]',
+  },
+};
+
 export const CustomButton: React.FC<CustomButtonProps> = ({
   title,
   onPress,
@@ -33,131 +70,28 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
   style,
   textStyle,
 }) => {
-  const getVariantStyles = (): { container: ViewStyle; text: TextStyle } => {
-    switch (variant) {
-      case 'secondary':
-        return {
-          container: {
-            backgroundColor: theme.colors.primaryLight,
-            borderColor: 'transparent',
-          },
-          text: {
-            color: theme.colors.textPrimary,
-          },
-        };
-      case 'outline':
-        return {
-          container: {
-            backgroundColor: 'transparent',
-            borderColor: theme.colors.border,
-            borderWidth: 1.5,
-          },
-          text: {
-            color: theme.colors.textPrimary,
-          },
-        };
-      case 'danger':
-        return {
-          container: {
-            backgroundColor: theme.colors.danger,
-            borderColor: 'transparent',
-          },
-          text: {
-            color: theme.colors.white,
-          },
-        };
-      case 'ghost':
-        return {
-          container: {
-            backgroundColor: 'transparent',
-            borderColor: 'transparent',
-          },
-          text: {
-            color: theme.colors.textSecondary,
-          },
-        };
-      case 'primary':
-      default:
-        return {
-          container: {
-            backgroundColor: theme.colors.primary,
-            borderColor: 'transparent',
-          },
-          text: {
-            color: '#000000',
-            fontWeight: '700',
-          },
-        };
-    }
-  };
-
-  const getSizeStyles = (): { container: ViewStyle; text: TextStyle } => {
-    switch (size) {
-      case 'sm':
-        return {
-          container: {
-            paddingVertical: 8,
-            paddingHorizontal: 14,
-            borderRadius: theme.borderRadius.sm,
-          },
-          text: {
-            fontSize: 13,
-            fontWeight: '600',
-          },
-        };
-      case 'lg':
-        return {
-          container: {
-            paddingVertical: 16,
-            paddingHorizontal: 24,
-            borderRadius: theme.borderRadius.lg,
-          },
-          text: {
-            fontSize: 16,
-            fontWeight: '600',
-          },
-        };
-      case 'md':
-      default:
-        return {
-          container: {
-            paddingVertical: 12,
-            paddingHorizontal: 18,
-            borderRadius: theme.borderRadius.md,
-          },
-          text: {
-            fontSize: 15,
-            fontWeight: '600',
-          },
-        };
-    }
-  };
-
-  const vStyles = getVariantStyles();
-  const sStyles = getSizeStyles();
+  const currentVariant = variantStyles[variant] || variantStyles.primary;
+  const currentSize = sizeStyles[size] || sizeStyles.md;
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
       disabled={disabled || loading}
-      style={[
-        styles.button,
-        vStyles.container,
-        sStyles.container,
-        disabled && styles.disabledButton,
-        style,
-      ]}
+      className={`items-center justify-center flex-row ${currentVariant.container} ${currentSize.container} ${
+        disabled ? 'opacity-50' : ''
+      }`}
+      style={style}
     >
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'primary' || variant === 'danger' ? theme.colors.white : theme.colors.primary}
+          color={variant === 'primary' || variant === 'danger' ? '#FFFFFF' : theme.colors.primary}
         />
       ) : (
-        <View style={styles.contentRow}>
-          {icon && <View style={styles.iconContainer}>{icon}</View>}
-          <Text style={[styles.text, vStyles.text, sStyles.text, textStyle]}>
+        <View className="flex-row items-center justify-center">
+          {icon && <View className="mr-2">{icon}</View>}
+          <Text className={`text-center ${currentVariant.text} ${currentSize.text}`} style={textStyle}>
             {title}
           </Text>
         </View>
@@ -165,25 +99,3 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  contentRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconContainer: {
-    marginRight: 8,
-  },
-  text: {
-    textAlign: 'center',
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-});

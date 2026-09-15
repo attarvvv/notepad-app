@@ -3,7 +3,6 @@ import {
   View,
   TextInput,
   Text,
-  StyleSheet,
   TextInputProps,
   TouchableOpacity,
   ViewStyle,
@@ -35,18 +34,20 @@ export const CustomInput: React.FC<CustomInputProps> = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View className="mb-4" style={containerStyle}>
+      {label && <Text className="text-[13px] font-semibold text-white mb-1.5">{label}</Text>}
       <View
-        style={[
-          styles.inputContainer,
-          isFocused && styles.inputFocused,
-          !!error && styles.inputError,
-        ]}
+        className={`flex-row items-center bg-[#1C1C1E] border-[1.5px] rounded-xl px-3 h-[50px] ${
+          error
+            ? 'border-[#FF453A]'
+            : isFocused
+            ? 'border-[#EBB338] bg-[#2C2C2E]'
+            : 'border-[#2C2C2E]'
+        }`}
       >
-        {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
+        {leftIcon && <View className="mr-2">{leftIcon}</View>}
         <TextInput
-          style={[styles.input, style]}
+          className="flex-1 text-[15px] text-white h-full p-0"
           placeholderTextColor={theme.colors.textMuted}
           secureTextEntry={isPassword ? !showPassword : secureTextEntry}
           onFocus={(e) => {
@@ -57,11 +58,12 @@ export const CustomInput: React.FC<CustomInputProps> = ({
             setIsFocused(false);
             onBlur?.(e);
           }}
+          style={style}
           {...rest}
         />
         {isPassword && (
           <TouchableOpacity
-            style={styles.rightIconContainer}
+            className="p-1"
             onPress={() => setShowPassword(!showPassword)}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
@@ -73,53 +75,7 @@ export const CustomInput: React.FC<CustomInputProps> = ({
           </TouchableOpacity>
         )}
       </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text className="text-[13px] text-[#FF453A] mt-1">{error}</Text> : null}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: theme.spacing.lg,
-  },
-  label: {
-    ...theme.typography.bodySmall,
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.xs + 2,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.colors.surface,
-    borderWidth: 1.5,
-    borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius.md,
-    paddingHorizontal: theme.spacing.md,
-    height: 50,
-  },
-  inputFocused: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.surfaceSubtle,
-  },
-  inputError: {
-    borderColor: theme.colors.danger,
-  },
-  leftIconContainer: {
-    marginRight: theme.spacing.sm,
-  },
-  rightIconContainer: {
-    padding: theme.spacing.xs,
-  },
-  input: {
-    flex: 1,
-    ...theme.typography.bodyMedium,
-    color: theme.colors.textPrimary,
-    height: '100%',
-  },
-  errorText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.danger,
-    marginTop: theme.spacing.xs,
-  },
-});

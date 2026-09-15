@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { StickyNote, SearchX } from 'lucide-react-native';
 import { theme } from '../theme/colors';
 import { CustomButton } from './CustomButton';
@@ -26,58 +26,30 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       : "We couldn't find any notes matching your search query.";
 
   return (
-    <View style={styles.container}>
-      <View style={styles.iconCircle}>
+    <View className="items-center justify-center px-6 py-8">
+      <View className="w-24 h-24 rounded-full bg-[#EBB338]/15 items-center justify-center mb-4">
         {type === 'empty' ? (
           <StickyNote size={48} color={theme.colors.primary} strokeWidth={1.5} />
         ) : (
           <SearchX size={48} color={theme.colors.primary} strokeWidth={1.5} />
         )}
       </View>
-      <Text style={styles.title}>{title || defaultTitle}</Text>
-      <Text style={styles.description}>{description || defaultDescription}</Text>
+      <Text className="text-[17px] font-semibold text-white mb-1 text-center">
+        {title || defaultTitle}
+      </Text>
+      <Text className="text-[15px] text-[#8E8E93] text-center leading-[22px]">
+        {description || defaultDescription}
+      </Text>
       {actionTitle && onAction && (
-        <CustomButton
-          title={actionTitle}
-          onPress={onAction}
-          variant="secondary"
-          size="sm"
-          style={styles.actionButton}
-        />
+        <View className="mt-4">
+          <CustomButton
+            title={actionTitle}
+            onPress={onAction}
+            variant="secondary"
+            size="sm"
+          />
+        </View>
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: theme.spacing.xxl,
-    paddingVertical: theme.spacing.xxxl,
-  },
-  iconCircle: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: theme.colors.primaryLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: theme.spacing.lg,
-  },
-  title: {
-    ...theme.typography.titleMedium,
-    color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.xs,
-    textAlign: 'center',
-  },
-  description: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  actionButton: {
-    marginTop: theme.spacing.lg,
-  },
-});

@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   RefreshControl,
   TouchableOpacity,
@@ -93,15 +92,15 @@ export const NotesListScreen: React.FC<Props> = ({ navigation }) => {
   });
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View className="flex-1 bg-black" style={{ paddingTop: insets.top }}>
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
 
       {/* Top Header */}
-      <View style={styles.topHeader}>
-        <View style={styles.topHeaderRight}>
+      <View className="flex-row justify-end px-4 pt-2">
+        <View className="flex-row items-center">
           <TouchableOpacity
             onPress={handleLogout}
-            style={styles.logoutIconButton}
+            className="p-1.5"
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <LogOut size={20} color={theme.colors.primary} />
@@ -110,12 +109,12 @@ export const NotesListScreen: React.FC<Props> = ({ navigation }) => {
       </View>
 
       {/* iOS Large Title */}
-      <View style={styles.titleSection}>
-        <Text style={styles.largeTitle}>Notes</Text>
+      <View className="px-4 pt-1 pb-2">
+        <Text className="text-[34px] font-bold text-white tracking-tight">Notes</Text>
       </View>
 
       {/* iOS Search Bar */}
-      <View style={styles.searchSection}>
+      <View className="px-4 pb-3">
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -130,11 +129,13 @@ export const NotesListScreen: React.FC<Props> = ({ navigation }) => {
         <FlatList
           data={filteredNotes}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={[
-            styles.listContent,
-            filteredNotes.length === 0 && styles.emptyListContent,
-            { paddingBottom: insets.bottom + 80 },
-          ]}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            paddingTop: 4,
+            paddingBottom: insets.bottom + 80,
+            flexGrow: filteredNotes.length === 0 ? 1 : undefined,
+            justifyContent: filteredNotes.length === 0 ? 'center' : undefined,
+          }}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
@@ -173,18 +174,21 @@ export const NotesListScreen: React.FC<Props> = ({ navigation }) => {
       )}
 
       {/* Signature iOS Bottom Toolbar */}
-      <View style={[styles.bottomToolbar, { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 }]}>
-        <View style={{ width: 28 }} />
+      <View
+        className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between px-4 pt-3 bg-[#121212]/95 border-t border-[#2C2C2E]"
+        style={{ paddingBottom: insets.bottom > 0 ? insets.bottom : 10 }}
+      >
+        <View className="w-7" />
 
         {/* Center Note Count */}
-        <Text style={styles.noteCountText}>
+        <Text className="text-xs text-[#8E8E93]">
           {filteredNotes.length} {filteredNotes.length === 1 ? 'Note' : 'Notes'}
         </Text>
 
         {/* Right Compose Button */}
         <TouchableOpacity
           onPress={() => navigation.navigate('NoteEditor')}
-          style={styles.composeButton}
+          className="p-1"
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <SquarePen size={24} color={theme.colors.primary} strokeWidth={2} />
@@ -193,69 +197,3 @@ export const NotesListScreen: React.FC<Props> = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  topHeader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: 8,
-  },
-  topHeaderRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  logoutIconButton: {
-    padding: 6,
-  },
-  titleSection: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: 4,
-    paddingBottom: 8,
-  },
-  largeTitle: {
-    ...theme.typography.largeTitle,
-    fontSize: 34,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    letterSpacing: 0.35,
-  },
-  searchSection: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingBottom: 12,
-  },
-  listContent: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: 4,
-  },
-  emptyListContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  bottomToolbar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: 12,
-    backgroundColor: 'rgba(18, 18, 18, 0.95)',
-    borderTopWidth: 0.5,
-    borderTopColor: '#2C2C2E',
-  },
-  noteCountText: {
-    ...theme.typography.caption,
-    fontSize: 12,
-    color: '#8E8E93',
-  },
-  composeButton: {
-    padding: 4,
-  },
-});

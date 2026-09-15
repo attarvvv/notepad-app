@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Note } from '../types';
-import { theme } from '../theme/colors';
 import { formatNoteDate } from '../utils/formatDate';
 
 interface NoteCardProps {
@@ -19,51 +18,18 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onPress }) => {
     <TouchableOpacity
       activeOpacity={0.65}
       onPress={onPress}
-      style={styles.card}
+      className="bg-[#1C1C1E] rounded-[14px] py-3.5 px-4 mb-2.5"
     >
-      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+      <Text className="text-[17px] font-semibold text-white mb-1" numberOfLines={1} ellipsizeMode="tail">
         {displayTitle}
       </Text>
 
-      <View style={styles.detailsRow}>
-        <Text style={styles.dateText}>{formattedDate}</Text>
-        <Text style={styles.snippetText} numberOfLines={1} ellipsizeMode="tail">
+      <View className="flex-row items-center">
+        <Text className="text-[14px] text-[#8E8E93] mr-2">{formattedDate}</Text>
+        <Text className="text-[14px] text-[#636366] flex-1" numberOfLines={1} ellipsizeMode="tail">
           {displayContent}
         </Text>
       </View>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#1C1C1E',
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 10,
-  },
-  title: {
-    ...theme.typography.titleMedium,
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  detailsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dateText: {
-    ...theme.typography.bodySmall,
-    fontSize: 14,
-    color: '#8E8E93',
-    marginRight: 8,
-  },
-  snippetText: {
-    ...theme.typography.bodySmall,
-    fontSize: 14,
-    color: '#636366',
-    flex: 1,
-  },
-});

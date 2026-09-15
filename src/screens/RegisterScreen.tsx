@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -97,42 +96,45 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.flex}
+      className="flex-1 bg-black"
     >
       <ScrollView
-        contentContainerStyle={[
-          styles.scrollContainer,
-          { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 },
-        ]}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 20,
+          justifyContent: 'center',
+          paddingTop: insets.top + 20,
+          paddingBottom: insets.bottom + 20,
+        }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         {/* Header Branding */}
-        <View style={styles.brandingContainer}>
-          <View style={styles.logoCircle}>
+        <View className="items-center mb-5">
+          <View className="w-16 h-16 rounded-[32px] bg-[#1C1C1E] items-center justify-center border border-[#2C2C2E] mb-3">
             <UserPlus size={32} color={theme.colors.primary} />
           </View>
-          <Text style={styles.appTitle}>Create Account</Text>
-          <Text style={styles.tagline}>Start saving and organizing your notes</Text>
+          <Text className="text-[28px] font-bold text-white tracking-tight">Create Account</Text>
+          <Text className="text-[15px] text-[#8E8E93] mt-1">Start saving and organizing your notes</Text>
         </View>
 
         {!isSupabaseConfigured() && (
-          <View style={styles.configNotice}>
-            <AlertCircle size={18} color={theme.colors.textSecondary} style={{ marginRight: 8 }} />
-            <Text style={styles.configNoticeText}>
-              Connect your Supabase credentials in <Text style={styles.codeText}>src/lib/supabase.ts</Text>
+          <View className="flex-row items-center bg-[#2C2C2E] border border-[#2C2C2E] rounded-xl p-3 mb-4">
+            <AlertCircle size={18} color={theme.colors.textSecondary} className="mr-2" />
+            <Text className="text-[13px] text-[#8E8E93] flex-1">
+              Connect your Supabase credentials in <Text className="font-semibold text-white">src/lib/supabase.ts</Text>
             </Text>
           </View>
         )}
 
         {/* Card Form */}
-        <View style={styles.formCard}>
-          <Text style={styles.formTitle}>Get Started</Text>
-          <Text style={styles.formSubtitle}>Enter your details to create an account</Text>
+        <View className="bg-[#1C1C1E] rounded-2xl p-5 border border-[#2C2C2E]">
+          <Text className="text-[17px] font-semibold text-white mb-1">Get Started</Text>
+          <Text className="text-[15px] text-[#8E8E93] mb-5">Enter your details to create an account</Text>
 
           {errors.general ? (
-            <View style={styles.generalErrorBox}>
-              <Text style={styles.generalErrorText}>{errors.general}</Text>
+            <View className="bg-danger/20 p-3 rounded-lg mb-4">
+              <Text className="text-[13px] text-danger text-center">{errors.general}</Text>
             </View>
           ) : null}
 
@@ -177,130 +179,27 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
             leftIcon={<Lock size={18} color={theme.colors.textMuted} />}
           />
 
-          <CustomButton
-            title="Create Account"
-            onPress={handleRegister}
-            loading={loading}
-            size="lg"
-            style={styles.registerButton}
-          />
+          <View className="mt-2">
+            <CustomButton
+              title="Create Account"
+              onPress={handleRegister}
+              loading={loading}
+              size="lg"
+            />
+          </View>
         </View>
 
         {/* Switch to Login */}
-        <View style={styles.switchAuthContainer}>
-          <Text style={styles.switchAuthText}>Already have an account?</Text>
+        <View className="flex-row justify-center items-center mt-6">
+          <Text className="text-[15px] text-[#8E8E93] mr-1">Already have an account?</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('Login')}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Text style={styles.switchAuthLink}>Sign in</Text>
+            <Text className="text-[15px] text-primary font-bold">Sign in</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingHorizontal: theme.spacing.xl,
-    justifyContent: 'center',
-  },
-  brandingContainer: {
-    alignItems: 'center',
-    marginBottom: theme.spacing.xl,
-  },
-  logoCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: theme.colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    marginBottom: theme.spacing.md,
-    ...theme.shadows.soft,
-  },
-  appTitle: {
-    ...theme.typography.titleLarge,
-    color: theme.colors.textPrimary,
-  },
-  tagline: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.textSecondary,
-    marginTop: theme.spacing.xs,
-  },
-  configNotice: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.colors.surfaceSubtle,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.md,
-    marginBottom: theme.spacing.lg,
-  },
-  configNoticeText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.textSecondary,
-    flex: 1,
-  },
-  codeText: {
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-  },
-  formCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.xl,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    ...theme.shadows.medium,
-  },
-  formTitle: {
-    ...theme.typography.titleMedium,
-    color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.xs,
-  },
-  formSubtitle: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.xl,
-  },
-  generalErrorBox: {
-    backgroundColor: theme.colors.dangerLight,
-    padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.sm,
-    marginBottom: theme.spacing.lg,
-  },
-  generalErrorText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.danger,
-    textAlign: 'center',
-  },
-  registerButton: {
-    marginTop: theme.spacing.sm,
-  },
-  switchAuthContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: theme.spacing.xxl,
-  },
-  switchAuthText: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.textSecondary,
-    marginRight: theme.spacing.xs,
-  },
-  switchAuthLink: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.primary,
-    fontWeight: '700',
-  },
-});

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
@@ -25,11 +24,8 @@ import {
   Paperclip,
   PenTool,
   Trash2,
-  Copy,
-  Info,
-  X,
 } from 'lucide-react-native';
-import { AppStackParamList, Note } from '../types';
+import { AppStackParamList } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { theme } from '../theme/colors';
@@ -41,13 +37,12 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const existingNote = route.params?.note;
-  const isEditing = !!existingNote;
 
   const [noteId, setNoteId] = useState<string | undefined>(existingNote?.id);
   const [title, setTitle] = useState(existingNote?.title || '');
   const [content, setContent] = useState(existingNote?.content || '');
   const [menuVisible, setMenuVisible] = useState(false);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [, setIsKeyboardVisible] = useState(false);
 
   // References for auto-saving without state race condition
   const titleRef = useRef(title);
@@ -229,25 +224,25 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
     : formatDetailedDate(new Date().toISOString());
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View className="flex-1 bg-black" style={{ paddingTop: insets.top }}>
       {/* iOS Top Navigation Bar */}
-      <View style={styles.navBar}>
+      <View className="flex-row items-center justify-between px-4 py-2.5 bg-black">
         {/* Left: < Notes */}
         <TouchableOpacity
           onPress={handleBack}
-          style={styles.backButton}
+          className="flex-row items-center -ml-2"
           activeOpacity={0.7}
           hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         >
-          <ChevronLeft size={28} color={theme.colors.primary} strokeWidth={2.5} style={styles.chevronIcon} />
-          <Text style={styles.backLabel}>Notes</Text>
+          <ChevronLeft size={28} color={theme.colors.primary} strokeWidth={2.5} className="-mr-0.5" />
+          <Text className="text-primary text-[17px] font-normal">Notes</Text>
         </TouchableOpacity>
 
         {/* Right Action Icons: Share & 3-Dots */}
-        <View style={styles.navRightActions}>
+        <View className="flex-row items-center">
           <TouchableOpacity
             onPress={handleShare}
-            style={styles.navIconButton}
+            className="ml-4"
             activeOpacity={0.7}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
@@ -256,7 +251,7 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
 
           <TouchableOpacity
             onPress={handleMorePress}
-            style={styles.navIconButton}
+            className="ml-4"
             activeOpacity={0.7}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
@@ -268,23 +263,26 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
       {/* Main Canvas Scroll */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex}
+        className="flex-1"
       >
         <ScrollView
-          style={styles.scrollCanvas}
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingBottom: insets.bottom + 80 },
-          ]}
+          className="flex-1 bg-black"
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 4,
+            paddingBottom: insets.bottom + 80,
+          }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* Centered Date Header */}
-          <Text style={styles.dateStamp}>{displayDate}</Text>
+          <Text className="text-center text-xs text-[#8E8E93] mb-4 mt-1 font-normal">
+            {displayDate}
+          </Text>
 
           {/* Title Input */}
           <TextInput
-            style={styles.titleInput}
+            className="text-[30px] font-bold text-white mb-3 p-0 tracking-tight"
             placeholder="Title"
             placeholderTextColor={theme.colors.textMuted}
             value={title}
@@ -295,7 +293,7 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
 
           {/* Body Content Input */}
           <TextInput
-            style={styles.bodyInput}
+            className="text-[17px] leading-[26px] text-white p-0 min-h-[400px]"
             placeholder="Type note here..."
             placeholderTextColor={theme.colors.textMuted}
             value={content}
@@ -308,11 +306,14 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
         </ScrollView>
 
         {/* Signature iOS Notes Bottom Toolbar */}
-        <View style={[styles.bottomToolbar, { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 }]}>
-          <View style={styles.toolbarLeft}>
+        <View
+          className="flex-row items-center justify-between px-5 pt-3 bg-[#121212] border-t border-[#2C2C2E]"
+          style={{ paddingBottom: insets.bottom > 0 ? insets.bottom : 10 }}
+        >
+          <View className="flex-row items-center">
             <TouchableOpacity
               onPress={handleInsertChecklist}
-              style={styles.toolbarButton}
+              className="mr-6"
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <ListTodo size={22} color={theme.colors.textSecondary} strokeWidth={1.8} />
@@ -320,7 +321,7 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
 
             <TouchableOpacity
               onPress={() => Alert.alert('Attachment', 'Attachment feature')}
-              style={styles.toolbarButton}
+              className="mr-6"
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Paperclip size={22} color={theme.colors.textSecondary} strokeWidth={1.8} />
@@ -328,7 +329,7 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
 
             <TouchableOpacity
               onPress={() => Alert.alert('Drawing', 'Sketch tool')}
-              style={styles.toolbarButton}
+              className="mr-6"
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <PenTool size={22} color={theme.colors.textSecondary} strokeWidth={1.8} />
@@ -338,7 +339,7 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
           {/* New note button on bottom right */}
           <TouchableOpacity
             onPress={handleCreateNew}
-            style={styles.toolbarComposeButton}
+            className="p-1"
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <SquarePen size={24} color={theme.colors.primary} strokeWidth={2} />
@@ -354,37 +355,42 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity
-          style={styles.modalOverlay}
+          className="flex-1 bg-black/60 justify-end"
           activeOpacity={1}
           onPress={() => setMenuVisible(false)}
         >
-          <View style={[styles.actionSheetContainer, { paddingBottom: insets.bottom + 20 }]}>
-            <View style={styles.actionSheetHeader}>
-              <Text style={styles.actionSheetTitle}>Note Options</Text>
-              <Text style={styles.actionSheetSub}>{wordCount} words · {charCount} characters</Text>
+          <View
+            className="bg-[#1C1C1E] rounded-t-[20px] pt-4 px-4"
+            style={{ paddingBottom: insets.bottom + 20 }}
+          >
+            <View className="items-center pb-4 border-b border-[#2C2C2E] mb-2">
+              <Text className="text-base font-semibold text-white">Note Options</Text>
+              <Text className="text-xs text-[#8E8E93] mt-1">
+                {wordCount} words · {charCount} characters
+              </Text>
             </View>
 
             <TouchableOpacity
-              style={styles.actionSheetRow}
+              className="flex-row items-center py-3.5 px-3 border-b border-[#2C2C2E]"
               onPress={handleShare}
             >
               <Share2 size={20} color={theme.colors.textPrimary} style={{ marginRight: 14 }} />
-              <Text style={styles.actionSheetRowText}>Share Note</Text>
+              <Text className="text-[17px] text-white">Share Note</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionSheetRow, styles.actionSheetDestructive]}
+              className="flex-row items-center py-3.5 px-3"
               onPress={handleDelete}
             >
               <Trash2 size={20} color={theme.colors.danger} style={{ marginRight: 14 }} />
-              <Text style={[styles.actionSheetRowText, { color: theme.colors.danger }]}>Delete Note</Text>
+              <Text className="text-[17px] text-danger">Delete Note</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.actionSheetCancelButton}
+              className="mt-3 bg-[#2C2C2E] rounded-xl py-3.5 items-center"
               onPress={() => setMenuVisible(false)}
             >
-              <Text style={styles.actionSheetCancelText}>Cancel</Text>
+              <Text className="text-[17px] font-semibold text-primary">Cancel</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -392,149 +398,3 @@ export const NoteEditorScreen: React.FC<Props> = ({ route, navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  navBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: 10,
-    backgroundColor: '#000000',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: -8,
-  },
-  chevronIcon: {
-    marginRight: -2,
-  },
-  backLabel: {
-    ...theme.typography.titleMedium,
-    color: theme.colors.primary,
-    fontSize: 17,
-    fontWeight: '400',
-  },
-  navRightActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  navIconButton: {
-    marginLeft: theme.spacing.lg,
-  },
-  scrollCanvas: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  scrollContent: {
-    paddingHorizontal: theme.spacing.xl,
-    paddingTop: theme.spacing.xs,
-  },
-  dateStamp: {
-    ...theme.typography.timestamp,
-    marginBottom: theme.spacing.lg,
-    marginTop: theme.spacing.xs,
-    color: '#8E8E93',
-  },
-  titleInput: {
-    ...theme.typography.noteTitle,
-    fontSize: 30,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: theme.spacing.md,
-    padding: 0,
-  },
-  bodyInput: {
-    ...theme.typography.bodyLarge,
-    fontSize: 17,
-    lineHeight: 26,
-    color: '#FFFFFF',
-    padding: 0,
-    minHeight: 400,
-  },
-  bottomToolbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: theme.spacing.xl,
-    paddingTop: 12,
-    backgroundColor: '#121212',
-    borderTopWidth: 0.5,
-    borderTopColor: '#2C2C2E',
-  },
-  toolbarLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  toolbarButton: {
-    marginRight: 24,
-  },
-  toolbarComposeButton: {
-    padding: 4,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'flex-end',
-  },
-  actionSheetContainer: {
-    backgroundColor: '#1C1C1E',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 16,
-    paddingHorizontal: 16,
-  },
-  actionSheetHeader: {
-    alignItems: 'center',
-    paddingBottom: 16,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#2C2C2E',
-    marginBottom: 8,
-  },
-  actionSheetTitle: {
-    ...theme.typography.titleMedium,
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
-  actionSheetSub: {
-    ...theme.typography.caption,
-    color: '#8E8E93',
-    marginTop: 4,
-  },
-  actionSheetRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#2C2C2E',
-  },
-  actionSheetDestructive: {
-    borderBottomWidth: 0,
-  },
-  actionSheetRowText: {
-    ...theme.typography.bodyLarge,
-    fontSize: 17,
-    color: '#FFFFFF',
-  },
-  actionSheetCancelButton: {
-    marginTop: 12,
-    backgroundColor: '#2C2C2E',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  actionSheetCancelText: {
-    ...theme.typography.titleMedium,
-    fontSize: 17,
-    color: theme.colors.primary,
-  },
-});
